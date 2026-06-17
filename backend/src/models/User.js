@@ -1,6 +1,9 @@
 // Import the mongoose library to interact with MongoDB
 const mongoose = require('mongoose');
 
+// Import bcrypt for hashing passwords securely before saving them to the database
+const bcrypt = require('bcrypt');
+
 // Create a new Mongoose schema which defines the structure of the User document in the database
 const userSchema = new mongoose.Schema({
   // 'name' field: must be a string, is required, and whitespace is trimmed from both ends
@@ -43,6 +46,30 @@ const userSchema = new mongoose.Schema({
 }, {
   // 'timestamps' option: Mongoose will automatically create and manage 'createdAt' and 'updatedAt' fields for us
   timestamps: true
+});
+
+// Mongoose pre-save middleware (hook) that runs right before a document is saved to the database
+userSchema.pre('save', async function (next) {
+  // Check if the 'password' field has been modified in this operation (e.g., during creation or password reset).
+  // If it hasn't been modified (e.g., just updating the user's name), skip hashing to prevent double-hashing.
+  if (!this.isModified('password')) {
+    return next();
+  }
+
+  try {
+    // Generate a cryptographic salt with a cost factor of 10. The salt adds randomness to the hash.
+    const salt = await bcrypt.genSalt(10);
+    
+    // Hash the plain-text password using the generated salt
+    // 'this' refers to the current User document being saved
+    this.password = await bcrypt.hash(this.password, salt);
+    
+    // Proceed to the next middleware or save the document
+    next();
+  } catch (error) {
+    // If an error occurs during hashing, pass it to the next middleware to handle the error
+    next(error);
+  }
 });
 
 // Create the 'User' model using the schema we just defined
