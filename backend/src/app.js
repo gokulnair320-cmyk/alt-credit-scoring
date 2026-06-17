@@ -7,5 +7,11 @@ const app = express();
 // Add middleware to parse incoming JSON payloads. This allows the app to understand JSON data sent in request bodies.
 app.use(express.json());
 
+// Import the authentication routes from the routes directory
+const authRoutes = require('./routes/authRoutes');
+
+// Mount the authentication routes under the '/api/auth' base path
+app.use('/api/auth', authRoutes);
+
 // Export the initialized Express application so it can be imported and used by other files, like server.js.
 module.exports = app;

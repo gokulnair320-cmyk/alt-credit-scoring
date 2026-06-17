@@ -30,8 +30,8 @@ const userSchema = new mongoose.Schema({
   // 'role' field: a string that is restricted to specific enum values, defaulting to 'user'
   role: {
     type: String,
-    enum: ['user', 'employee', 'admin'],
-    default: 'user'
+    enum: ['applicant', 'officer', 'admin'],
+    default: 'applicant'
   },
   // 'employeeId' field: a string to identify employees. 'unique' and 'sparse' mean it must be unique if provided, but can be left empty
   employeeId: {
