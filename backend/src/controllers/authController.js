@@ -1,5 +1,7 @@
 // Import the User model to interact with the users collection in the database
 const User = require('../models/User');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 // Define an asynchronous function to handle the registration logic
 const registerUser = async (req, res) => {
@@ -55,7 +57,53 @@ const registerUser = async (req, res) => {
   }
 };
 
-// Export the registerUser controller function so it can be used in the routes file
+// Define an asynchronous function to handle the login logic
+const loginUser = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // Validation: Ensure required fields are present
+    if (!email || !password) {
+      return res.status(400).json({ message: 'Email and password are required fields' });
+    }
+
+    // Find the user by email
+    const user = await User.findOne({ email });
+
+    // If user is not found
+    if (!user) {
+      return res.status(401).json({ message: 'Invalid credentials' });
+    }
+
+    // Verify password using bcrypt
+    const isMatch = await bcrypt.compare(password, user.password);
+
+    if (!isMatch) {
+      return res.status(401).json({ message: 'Invalid credentials' });
+    }
+
+    // Generate a JWT token containing userId and role
+    const payload = {
+      userId: user._id,
+      role: user.role
+    };
+
+    const token = jwt.sign(payload, process.env.JWT_SECRET, { expiresIn: '1d' });
+
+    // Return success message and token
+    res.status(200).json({
+      message: 'Login successful',
+      token
+    });
+
+  } catch (error) {
+    console.error(`Login error: ${error.message}`);
+    res.status(500).json({ message: 'Server error during login' });
+  }
+};
+
+// Export the registerUser and loginUser controller functions so they can be used in the routes file
 module.exports = {
-  registerUser
+  registerUser,
+  loginUser
 };
