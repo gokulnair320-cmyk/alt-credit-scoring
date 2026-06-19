@@ -101,9 +101,21 @@ const loginUser = async (req, res) => {
     res.status(500).json({ message: 'Server error during login' });
   }
 };
+// Define a simple controller function for the protected profile route
+const getProfile = (req, res) => {
+  // This route is protected, meaning it will only be reached if authMiddleware succeeds
+  // We return a simple message and the decoded user data from req.user
+  // No database queries are performed here as per requirements.
+  res.status(200).json({
+    message: "Protected route accessed successfully",
+    user: req.user
+  });
+};
+
 
 // Export the registerUser and loginUser controller functions so they can be used in the routes file
 module.exports = {
   registerUser,
-  loginUser
+  loginUser,
+  getProfile
 };
