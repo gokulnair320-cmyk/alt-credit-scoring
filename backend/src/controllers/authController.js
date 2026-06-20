@@ -101,15 +101,20 @@ const loginUser = async (req, res) => {
     res.status(500).json({ message: 'Server error during login' });
   }
 };
-// Define a simple controller function for the protected profile route
-const getProfile = (req, res) => {
-  // This route is protected, meaning it will only be reached if authMiddleware succeeds
-  // We return a simple message and the decoded user data from req.user
-  // No database queries are performed here as per requirements.
-  res.status(200).json({
-    message: "Protected route accessed successfully",
-    user: req.user
-  });
+const getProfile = async (req, res) => {
+  try {
+    const userId = req.user.userId;
+    const user = await User.findById(userId).select('-password');
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.status(200).json(user);
+  } catch (error) {
+    console.error(`Profile error: ${error.message}`);
+    res.status(500).json({ message: 'Server error retrieving profile' });
+  }
 };
 
 
