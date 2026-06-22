@@ -9,9 +9,11 @@ app.use(express.json());
 
 // Import the authentication routes from the routes directory
 const authRoutes = require('./routes/authRoutes');
+const loanRoutes = require('./routes/loanRoutes');
 
 // Mount the authentication routes under the '/api/auth' base path
 app.use('/api/auth', authRoutes);
+app.use('/api/loans', loanRoutes);
 
 // Export the initialized Express application so it can be imported and used by other files, like server.js.
 module.exports = app;
