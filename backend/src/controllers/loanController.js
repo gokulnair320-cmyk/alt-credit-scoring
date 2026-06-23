@@ -1,3 +1,4 @@
+const mongoose = require('mongoose');
 const LoanApplication = require('../models/LoanApplication');
 
 const createLoanApplication = async (req, res) => {
@@ -51,8 +52,35 @@ const getMyApplications = async (req, res) => {
     }
 };
 
-// Export createLoanApplication and getMyApplications
+const getLoanById = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        if (!mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ message: "Invalid loan ID" });
+        }
+
+        const loan = await LoanApplication.findById(id);
+
+        if (!loan) {
+            return res.status(404).json({ message: "Loan application not found" });
+        }
+
+        if (loan.applicant.toString() !== req.user.userId) {
+            return res.status(403).json({ message: "Access denied" });
+        }
+
+        return res.status(200).json(loan);
+    } catch (error) {
+        return res.status(500).json({
+            message: "Server error retrieving loan application"
+        });
+    }
+};
+
+// Export createLoanApplication, getMyApplications, getLoanById
 module.exports = {
     createLoanApplication,
-    getMyApplications
+    getMyApplications,
+    getLoanById
 };
