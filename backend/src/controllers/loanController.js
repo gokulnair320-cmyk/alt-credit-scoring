@@ -35,7 +35,24 @@ const createLoanApplication = async (req, res) => {
     }
 };
 
-// Export createLoanApplication
+const getMyApplications = async (req, res) => {
+    try {
+        const userId = req.user.userId;
+        const loans = await LoanApplication.find({ applicant: userId });
+        
+        return res.status(200).json({
+            count: loans.length,
+            loans
+        });
+    } catch (error) {
+        return res.status(500).json({
+            message: "Server error retrieving loan applications"
+        });
+    }
+};
+
+// Export createLoanApplication and getMyApplications
 module.exports = {
-    createLoanApplication
+    createLoanApplication,
+    getMyApplications
 };
