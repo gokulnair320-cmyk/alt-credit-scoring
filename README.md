@@ -13,10 +13,15 @@ Alt-Credit-Scoring is a full-stack application designed to provide alternative c
 - **React**: UI library
 - **Vite**: Build tool and development server
 
+### ML Service
+- **FastAPI (Python)**: High-performance ML API backend
+- **XGBoost & Pandas**: Machine learning and data manipulation
+
 ## Project Structure
 
 - `/backend` - Contains the Express server, controllers, models, and routes.
 - `/frontend` - Contains the React application built with Vite.
+- `/ml-service` - Contains the FastAPI Python backend for running machine learning predictions.
 
 ## Getting Started
 
