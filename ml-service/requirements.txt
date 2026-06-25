@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+pydantic
+xgboost
+pandas
+numpy
+joblib
+python-dotenv
