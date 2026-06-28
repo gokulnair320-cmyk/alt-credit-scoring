@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const LoanApplication = require('../models/LoanApplication');
+const predictionService = require('../services/predictionService');
 
 const createLoanApplication = async (req, res) => {
     try {
@@ -15,6 +16,29 @@ const createLoanApplication = async (req, res) => {
 
         // Create a new loan application
         const loan = await LoanApplication.create(loanData);
+
+        // Call prediction service
+        try {
+            const features = {
+                revolvingUtilization: loan.revolvingUtilization,
+                age: loan.age,
+                times30To59DaysLate: loan.times30To59DaysLate,
+                debtRatio: loan.debtRatio,
+                monthlyIncome: loan.monthlyIncome,
+                openCreditLines: loan.openCreditLines,
+                times90DaysLate: loan.times90DaysLate,
+                realEstateLoans: loan.realEstateLoans,
+                times60To89DaysLate: loan.times60To89DaysLate,
+                dependents: loan.dependents,
+                loanAmount: loan.loanAmount,
+                loanPurpose: loan.loanPurpose
+            };
+            
+            const predictionResponse = await predictionService.predictLoan(features);
+            console.log("Prediction Response from FastAPI:", predictionResponse);
+        } catch (predictionError) {
+            console.error("Failed to get prediction from ML service:", predictionError.message);
+        }
 
         // Return HTTP 201 Created on success
         return res.status(201).json({

@@ -11,14 +11,18 @@ class PredictionRequest(BaseModel):
     Represents the input features required by the ML model.
     Only includes fields necessary for prediction.
     """
+    revolvingUtilization: float = Field(..., description="Revolving utilization")
     age: int = Field(..., description="Age of the applicant", ge=18, le=100)
-    annual_income: float = Field(..., description="Annual income of the applicant")
-    employment_status: str = Field(..., description="Employment status (e.g., employed, self-employed, unemployed)")
-    credit_score: Optional[int] = Field(None, description="Traditional credit score if available")
-    loan_amount: float = Field(..., description="Requested loan amount")
-    loan_term_months: int = Field(..., description="Duration of the loan in months")
-    debt_to_income_ratio: float = Field(..., description="Debt to income ratio")
-    # Add other necessary ML input features here
+    times30To59DaysLate: int = Field(..., description="Times 30 to 59 days late")
+    debtRatio: float = Field(..., description="Debt to income ratio")
+    monthlyIncome: float = Field(..., description="Monthly income")
+    openCreditLines: int = Field(..., description="Number of open credit lines")
+    times90DaysLate: int = Field(..., description="Times 90 days late")
+    realEstateLoans: int = Field(..., description="Number of real estate loans")
+    times60To89DaysLate: int = Field(..., description="Times 60 to 89 days late")
+    dependents: int = Field(..., description="Number of dependents")
+    loanAmount: float = Field(..., description="Requested loan amount")
+    loanPurpose: str = Field(..., description="Purpose of the loan")
 
 class PredictionResponse(BaseModel):
     """
