@@ -1,0 +1,11 @@
+{
+    "monthly_income_median": 5400.0,
+    "dependents_median": 0.0,
+    "debt_ratio_upper": 4979.000400000001,
+    "monthly_income_upper": 23000.0,
+    "revolving_utilization_lower": 0.0,
+    "revolving_utilization_upper": 1.0,
+    "delinquency_upper": 10,
+    "open_credit_lines_upper": 30,
+    "real_estate_loans_upper": 10
+}

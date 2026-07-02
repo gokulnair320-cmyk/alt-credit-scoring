@@ -9,8 +9,26 @@ Responsibilities:
 It does NOT contain HTTP handling, file loading, FastAPI-specific code, or DB logic.
 """
 
+import os
+import json
+import joblib
+
 from models.schemas import PredictionRequest
 from utils.preprocessing import preprocess_features
+
+# Paths relative to the current file to ensure correct loading
+_ARTIFACTS_DIR = os.path.join(os.path.dirname(__file__), "..", "artifacts")
+
+# Load the trained machine learning model for inference
+model = joblib.load(os.path.join(_ARTIFACTS_DIR, "credit_model.pkl"))
+
+# Load the preprocessing configuration details
+with open(os.path.join(_ARTIFACTS_DIR, "preprocessing_config.json"), "r") as f:
+    preprocessing_config = json.load(f)
+
+# Load the ordered list of features expected by the model
+with open(os.path.join(_ARTIFACTS_DIR, "feature_order.json"), "r") as f:
+    feature_order = json.load(f)
 
 def predict_loan_approval(request: PredictionRequest) -> dict:
     """
